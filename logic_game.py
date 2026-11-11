@@ -5,23 +5,22 @@ from storge import *
 def get_name():
     escape_name_found = False
     while not escape_name_found:
-        name = input("Enter name: ")
+        name = input("Enter name: ").strip()
         if name != "":
             return name
 
 
 def get_rounds():
     escape_round_found = False
-    try:
-        while not escape_round_found:
-        
+    while not escape_round_found:
+        try:
             rounds = int(input("How many rounds?: "))
-            if rounds > 0 and rounds < 10:
+            if rounds > 0 and rounds <= 10:
                 return rounds
             else:
                 print("only number between 1 - 9")
-    except ValueError:
-        print("only valid")
+        except ValueError:
+            print("only valid")
 
 
 def roll_dice():
@@ -29,18 +28,16 @@ def roll_dice():
 
 
 def play_round():
-    player_score = roll_dice()
-    computer_score = roll_dice()
-    winner = calculate_winner(player_score, computer_score)
+    player_dice = roll_dice()
+    computer_dice = roll_dice()
+    winner = calculate_winner(player_dice, computer_dice)
     round_game = {
         "round":0,
-        "player_score": player_score,
-        "computer_score": computer_score,
+        "player_dice": player_dice,
+        "computer_dice": computer_dice,
         "winner": winner,
     }
     return round_game
-
-
 
 
 
@@ -56,8 +53,11 @@ def start_game():
         if round_play["winner"] == "player":
             player_score += 1
             round_play["winner"] = name
-        if round_play["winner"] == "computer":
+        elif round_play["winner"] == "computer":
             computer_score += 1
+            round_play["winner"] = "computer"
+        else:
+            round_play["winner"] = "draw"
         result_dict.append(round_play)
     
 
@@ -112,8 +112,8 @@ def display_game_results(game):
 
             ---------- ROUND {result["round"]} ----------
 
-            {game["player_name"]}: 🎲 {result["player_score"]}
-            Computer: 🎲 {result["computer_score"]}
+            {game["player_name"]}: 🎲 {result["player_dice"]}
+            Computer: 🎲 {result["computer_dice"]}
 
 
             {result["winner"]} wins this round!
